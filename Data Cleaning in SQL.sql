@@ -5,8 +5,8 @@ FROM [master].[dbo].[Nashville Housing Data for Data Cleaning]
 
 /*Format DateTime column to only display Date. Because our SaleDate column already only has the date showing, which is what we want, we will not execute 
 this query. Instead we will just type the query out to display how one would go about carrying out this process in regards to tidying their data. */
-SELECT SaleDate, CONVERT (Date, SaleDate)
-FROM [master].[dbo].[Nashville Housing Data for Data Cleaning]
+--SELECT SaleDate, CONVERT (Date, SaleDate)
+--FROM [master].[dbo].[Nashville Housing Data for Data Cleaning]
 
 
 
@@ -44,7 +44,7 @@ JOIN [master].[dbo].[Nashville Housing Data for Data Cleaning] B
     AND A.UniqueID <> B.UniqueID
 WHERE A.PropertyAddress IS NULL
 
--- Now, let's update our original table (A), to fill in the missing values for PropertyAddress
+-- Update our original table (A), to fill in the missing values for PropertyAddress
 
 UPDATE A
 SET PropertyAddress = ISNULL(A.PropertyAddress,B.PropertyAddress)
@@ -55,9 +55,8 @@ JOIN [master].[dbo].[Nashville Housing Data for Data Cleaning] B
 WHERE A.PropertyAddress IS NULL
 
 /*Perfect! After executing the above query, and re-running the query in line(s) 41-46, we can see that our original table has populated all the
-missing PropertyAddress values with the correct Addresses based off of both ParcelID & UniqueID ! The ISNULL function allowed for us to replace
-any null values in A.PropertyAddress with the correct matching value from B.PropertyAddress. If we wanted to, we could also replace the NULL values
-in table A with a string statement such as "No Address"; by simply replacing "B.PropertyAddress" with "No Address". */
+missing PropertyAddress values with the correct Addresses based off of both ParcelID & UniqueID. The ISNULL function allowed for us to replace
+any null values in A.PropertyAddress with the correct matching value from B.PropertyAddress. */
 
 -- BREAKING OUT ADDRESS INTO INDIVIDUAL COLUMNS (Address, City, State)
 SELECT PropertyAddress
@@ -88,7 +87,7 @@ UPDATE [master].[dbo].[Nashville Housing Data for Data Cleaning]
 SET PropertySplitCity = SUBSTRING (PropertyAddress, CHARINDEX(',', PropertyAddress) +1, LEN(PropertyAddress))
 
 /* Great! For extra practice now, let's look at the OwnerAddress column which contains the Address, City, AND state, and let's now repeat what we have done
-above, but let's use a MUCH simpler method. We will use the function PARSENAME as opposed to utilizing the SUBSTRING function to separate our results. */
+above, but utilizing a MUCH simpler method. We will use the function PARSENAME as opposed to the SUBSTRING function to separate our results. */
 
 SELECT 
 PARSENAME(REPLACE(OwnerAddress, ',', '.') ,3)
@@ -96,13 +95,12 @@ PARSENAME(REPLACE(OwnerAddress, ',', '.') ,3)
 ,PARSENAME(REPLACE(OwnerAddress, ',', '.') ,1)
 FROM [master].[dbo].[Nashville Housing Data for Data Cleaning]
 
--- Now add the columns and values to the table!
+-- Now add the columns and values to the table.
 ALTER TABLE [master].[dbo].[Nashville Housing Data for Data Cleaning]
 ADD OwnerSplitAddress NVARCHAR(255)
 
 UPDATE [master].[dbo].[Nashville Housing Data for Data Cleaning]
 SET OwnerSplitAddress = PARSENAME(REPLACE(OwnerAddress, ',', '.') ,3)
-
 
 ALTER TABLE [master].[dbo].[Nashville Housing Data for Data Cleaning]
 ADD OwnerSplitCity NVARCHAR(255)
@@ -136,14 +134,14 @@ SET SoldAsVacant = CASE WHEN CAST(SoldAsVacant AS NVARCHAR(5)) = 'Y' THEN 'Yes'
          ELSE CAST(SoldAsVacant AS NVARCHAR(5))
          END
 
-/* When uploading this dataset, I had set the "SoldAsVacant" field to have a data type of "text" because the the Yes/No values were being read as Boolean,
+/* When uploading this dataset in Azure, I had set the "SoldAsVacant" field to have a data type of "text" because the the Yes/No values were being read as Boolean,
 and I could not (at the time of uploading), figure out which data type was best to use as "Boolean" was not an option. Unfortunately, "text" data types
 cannot be counted by the COUNT function because they are text/string variables and not numerical -- hence the reason why my code shows me casting the 
-"SoldAsVacant" field as a "NVARCHAR" data type (which I will remember for future use lol). THANKFULLY though, the above queries executed perfectly, and now
-when you check the table, all variables indicated in the CASE WHEN statement above have been replaced :) */
+"SoldAsVacant" field as a "NVARCHAR" data type. Thankfully though, the above queries executed, and all variables indicated in the CASE WHEN statement 
+above have been replaced. */
 
 
--- REMOVE DUPLICATES (Apparently not a common practice in real world lol)
+-- REMOVE DUPLICATES
 
 WITH RowNumCTE AS(
 SELECT *,
@@ -165,9 +163,9 @@ WHERE row_num > 1
 
 /*It can be seen that there are 104 rows that are duplicated within the table. Now, by changing our function from SELECT to DELETE, we will eliminate 
 these duplicates. After doing this, simply changing the DELETE function back to SELECT and running the query shows us that all 104 duplicate rows have
-successfully been removed! */
+successfully been removed. */
 
--- DELETE UNUSUED COLUMNS (again, DEFINITELY double-check with your boss to ensure if ANY data should be removed/deleted lol)
+-- DELETE UNUSUED COLUMNS
 
 SELECT *
 FROM [Nashville Housing Data for Data Cleaning]
