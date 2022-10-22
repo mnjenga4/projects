@@ -8,7 +8,7 @@ this query. Instead we will just type the query out to display how one would go 
 --SELECT SaleDate, CONVERT (Date, SaleDate)
 --FROM [master].[dbo].[Nashville Housing Data for Data Cleaning]
 
-
+----------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- POPULATE PROPERTY ADDRESSES THAT ARE MISSING/NULL VALUES
 SELECT PropertyAddress
@@ -57,6 +57,8 @@ WHERE A.PropertyAddress IS NULL
 /*Perfect! After executing the above query, and re-running the query in line(s) 41-46, we can see that our original table has populated all the
 missing PropertyAddress values with the correct Addresses based off of both ParcelID & UniqueID. The ISNULL function allowed for us to replace
 any null values in A.PropertyAddress with the correct matching value from B.PropertyAddress. */
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- BREAKING OUT ADDRESS INTO INDIVIDUAL COLUMNS (Address, City, State)
 SELECT PropertyAddress
@@ -114,6 +116,7 @@ ADD OwnerSplitState NVARCHAR(255)
 UPDATE [master].[dbo].[Nashville Housing Data for Data Cleaning]
 SET OwnerSplitState = PARSENAME(REPLACE(OwnerAddress, ',', '.') ,1)
 
+----------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- CHANGE Y & N TO YES AND NO IN "SOLD AS VACANT" FIELD
 SELECT DISTINCT(CAST(SoldAsVacant AS NVARCHAR(5)))
@@ -140,6 +143,7 @@ cannot be counted by the COUNT function because they are text/string variables a
 "SoldAsVacant" field as a "NVARCHAR" data type. Thankfully though, the above queries executed, and all variables indicated in the CASE WHEN statement 
 above have been replaced. */
 
+----------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- REMOVE DUPLICATES
 
@@ -164,6 +168,8 @@ WHERE row_num > 1
 /*It can be seen that there are 104 rows that are duplicated within the table. Now, by changing our function from SELECT to DELETE, we will eliminate 
 these duplicates. After doing this, simply changing the DELETE function back to SELECT and running the query shows us that all 104 duplicate rows have
 successfully been removed. */
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- DELETE UNUSUED COLUMNS
 
