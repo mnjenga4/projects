@@ -2,6 +2,7 @@
 SELECT *
 FROM [master].[dbo].[Nashville Housing Data for Data Cleaning]
 
+----------------------------------------------------------------------------------------------------------------------------------------------------
 
 /*Format DateTime column to only display Date. Because our SaleDate column already only has the date showing, which is what we want, we will not execute 
 this query. Instead we will just type the query out to display how one would go about carrying out this process in regards to tidying their data. */
