@@ -1,4 +1,4 @@
--- Queries for Tableau visualization
+-- Queries for Covid-19 Tableau visualization
 
 --(1.)
 
