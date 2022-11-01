@@ -1,3 +1,4 @@
+-- Exploratory data analysis of Covid-19 
 SELECT *
 FROM model..Covid_19_Deaths
 WHERE continent IS NOT NULL
